@@ -1,0 +1,51 @@
+{
+  "name": "groupwriter-backend",
+  "version": "0.0.1",
+  "description": "Backend for GroupWriter",
+  "homepage": "https://b310.de",
+  "author": "B310 Digital GmbH",
+  "scripts": {
+    "start:prod": "node dist/app.js",
+    "start:dev": "ts-node src/app.ts",
+    "build:prod": "npx tsc -p ./tsconfig.prod.json",
+    "lint": "eslint .",
+    "lint:check": "eslint --max-warnings=0 --no-fix .",
+    "test": "vitest",
+    "format": "npx prettier . --write",
+    "format:check": "npx prettier . --check"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@hocuspocus/transformer": "^2.15.0",
+    "@hocuspocus/provider": "^2.15.0",
+    "@smithy/util-stream": "^4.0.2",
+    "@types/node": "^22.10.7",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.14.0",
+    "prettier": "3.4.2",
+    "prisma": "^6.2.1",
+    "prismock": "^1.35.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0",
+    "vitest": "^3.0.3",
+    "vitest-mock-extended": "^2.0.2",
+    "yjs": "^13.6.23"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.731.1",
+    "@hocuspocus/extension-database": "^2.15.0",
+    "@hocuspocus/extension-logger": "^2.15.0",
+    "@hocuspocus/server": "^2.14.0",
+    "@prisma/client": "^6.2.1",
+    "@types/formidable": "^3.4.5",
+    "cron": "^3.5.0",
+    "formidable": "^3.5.2"
+  }
+}

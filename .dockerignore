@@ -1,0 +1,14 @@
+# Ignore all by default
+
+*
+
+# Allow explicitly
+
+!/prisma
+!/src
+!entrypoint.prod.sh
+!LICENSE
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.prod.json

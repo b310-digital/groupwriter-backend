@@ -1,0 +1,24 @@
+# Ignore all
+/*
+
+# Now whitelist:
+!/tests/
+!/.github/
+!/prisma/
+!/src/
+!.dockerignore
+!.gitignore
+!.prettierrc
+!docker-compose-prod.yml
+!docker-compose.yml
+!Dockerfile
+!entrypoint.prod.sh
+!eslint.config.mjs
+!LICENSE
+!package.json
+!package-lock.json
+!README.md
+!tsconfig.json
+!tsconfig.prod.json
+!.env.default
+!vitest.config.ts
