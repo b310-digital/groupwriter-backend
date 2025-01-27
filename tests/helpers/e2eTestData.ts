@@ -65,7 +65,7 @@ const proseMirrorYencodedStateUpdate = Uint8Array.from([
 //       parent: [ID],
 //       parentSub: null,
 //       redone: null,
-//       content: [ContentString],
+//       content: ContentString { str: 'Some test text' },
 //       info: 2
 //     }
 //   ],
