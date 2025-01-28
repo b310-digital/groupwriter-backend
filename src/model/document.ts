@@ -146,7 +146,7 @@ export const isValidModificationSecret = async (
 };
 
 const MAX_AGE_IN_DAYS = parseInt(
-  process.env.REMOVE_OLD_DOCUMENTS_MAX_AGE_IN_DAYS ?? "730",
+  process.env.FEATURE_REMOVE_DOCUMENTS_MAX_AGE_IN_DAYS ?? "730",
   10,
 );
 
