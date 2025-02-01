@@ -32,6 +32,19 @@ describe("handleReadOnlyMode", () => {
     expect(connectionConfiguration.readOnly).toBeTruthy();
   });
 
+  it("should set readOnly mode to true when modificationSecret is set to readOnly", async () => {
+    const connectionConfiguration = buildConnectionConfiguration();
+
+    await handleReadOnlyMode(
+      prisma,
+      "documentName",
+      connectionConfiguration,
+      "readOnly",
+    );
+
+    expect(connectionConfiguration.readOnly).toBeTruthy();
+  });
+
   it("should set readOnly mode to false when modificationSecret is valid", async () => {
     const document = await createExampleDocument(prisma);
 

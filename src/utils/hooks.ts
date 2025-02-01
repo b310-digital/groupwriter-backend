@@ -8,7 +8,7 @@ export const handleReadOnlyMode = async (
   connection: ConnectionConfiguration,
   token: string,
 ) => {
-  connection.readOnly = !(
-    token && (await isValidModificationSecret(prisma, documentName, token))
-  );
+  connection.readOnly =
+    token === "readOnly" ||
+    !(token && (await isValidModificationSecret(prisma, documentName, token)));
 };
