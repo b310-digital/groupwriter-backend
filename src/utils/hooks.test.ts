@@ -64,12 +64,16 @@ describe("handleReadOnlyMode", () => {
   it("should throw if the document is missing", async () => {
     const connectionConfiguration = buildConnectionConfiguration();
 
-    expect(handleReadOnlyMode(
-      prisma,
-      randomUUID(),
-      connectionConfiguration,
-      randomUUID(),
-    )).rejects.toThrowError(expect.objectContaining({message: 'Document not found!'}));
+    await expect(
+      handleReadOnlyMode(
+        prisma,
+        randomUUID(),
+        connectionConfiguration,
+        randomUUID(),
+      ),
+    ).rejects.toThrowError(
+      expect.objectContaining({ message: "Document not found!" }) as Error,
+    );
   });
 });
 
