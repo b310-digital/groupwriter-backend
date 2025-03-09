@@ -3,6 +3,7 @@ import { ConnectionConfiguration } from "@hocuspocus/server";
 import { handleReadOnlyMode } from "./hooks";
 import { PrismockClient } from "prismock";
 import { createExampleDocument } from "../../tests/helpers/documentHelpers";
+import { randomUUID } from "crypto";
 const prisma = new PrismockClient();
 
 describe("handleReadOnlyMode", () => {
@@ -58,6 +59,17 @@ describe("handleReadOnlyMode", () => {
     );
 
     expect(connectionConfiguration.readOnly).toBeFalsy();
+  });
+
+  it("should throw if the document is missing", async () => {
+    const connectionConfiguration = buildConnectionConfiguration();
+
+    expect(handleReadOnlyMode(
+      prisma,
+      randomUUID(),
+      connectionConfiguration,
+      randomUUID(),
+    )).rejects.toThrowError(expect.objectContaining({message: 'Document not found!'}));
   });
 });
 

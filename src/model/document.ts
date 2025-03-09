@@ -142,6 +142,8 @@ export const isValidModificationSecret = async (
   if (!isValidUUID(documentName)) return false;
 
   const document = await fetchDocument(prisma, documentName);
+  if(!document) throw new Error("Document not found!")
+
   return document.modificationSecret === modificationSecret;
 };
 
