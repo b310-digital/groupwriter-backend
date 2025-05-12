@@ -1,4 +1,5 @@
-import { Configuration, Hocuspocus } from "@hocuspocus/server";
+import type { ServerConfiguration } from '@hocuspocus/server'
+import { Server, Hocuspocus } from '@hocuspocus/server'
 import {
   HocuspocusProvider,
   HocuspocusProviderConfiguration,
@@ -9,8 +10,8 @@ import {
 // This module includes copies of some hocuspocus helper function from the hocuspocus library, as these are not exported.
 
 // https://github.com/ueberdosis/hocuspocus/blob/main/tests/utils/newHocuspocus.ts
-export const newHocuspocus = (options?: Partial<Configuration>) => {
-  const server = new Hocuspocus({
+export const newHocuspocus = (options?: Partial<ServerConfiguration>) => {
+  const server = new Server({
     // We don’t need the logging in testing.
     quiet: true,
     // Binding something port 0 will end up on a random free port.
@@ -24,13 +25,13 @@ export const newHocuspocus = (options?: Partial<Configuration>) => {
 };
 
 export const newHocuspocusProviderWebsocket = (
-  server: Hocuspocus,
+  hocuspocus: Hocuspocus,
   options: Partial<Omit<HocuspocusProviderWebsocketConfiguration, "url">> = {},
 ) => {
   return new HocuspocusProviderWebsocket({
     // We don’t need which port the server is running on, but
     // we can get the URL from the passed server instance.
-    url: server.webSocketURL,
+    url: hocuspocus.server.webSocketURL,
     // Pass a polyfill to use WebSockets in a Node.js environment.
     WebSocketPolyfill: WebSocket,
     ...options,
@@ -38,22 +39,20 @@ export const newHocuspocusProviderWebsocket = (
 };
 
 export const newHocuspocusProvider = (
-  server: Hocuspocus,
+  hocuspocus: Hocuspocus,
   options: Partial<HocuspocusProviderConfiguration> = {},
   websocketOptions: Partial<HocuspocusProviderWebsocketConfiguration> = {},
   websocketProvider?: HocuspocusProviderWebsocket,
 ): HocuspocusProvider => {
-  return new HocuspocusProvider({
+  const provider = new HocuspocusProvider({
     websocketProvider:
       websocketProvider ??
-      newHocuspocusProviderWebsocket(server, websocketOptions),
+      newHocuspocusProviderWebsocket(hocuspocus, websocketOptions),
     // Just use a generic document name for all tests.
     name: "hocuspocus-test",
-    // There is no need to share data with other browser tabs in the testing environment.
-    broadcast: false,
-    // We don’t need console logging in tests. If we actually do, we can overwrite it anyway.
-    quiet: true,
     // Add or overwrite settings, depending on the test case.
     ...options,
   });
+  provider.attach()
+  return provider
 };

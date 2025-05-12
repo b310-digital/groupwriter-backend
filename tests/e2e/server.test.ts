@@ -24,13 +24,13 @@ describe("server", () => {
     // https://github.com/ueberdosis/hocuspocus/blob/main/packages/transformer/src/Prosemirror.ts
     // https://github.com/yjs/y-prosemirror/blob/8033895b5d3c8397df2bbd1138d3d8ccb8557c95/README.md?plain=1#L152
     const ydoc = TiptapTransformer.toYdoc(proseMirrorJson, "default");
-    const server = await newHocuspocus({
+    const hocuspocus = await newHocuspocus({
       onLoadDocument() {
         return Promise.resolve(ydoc);
       },
     });
     const provider = await new Promise<HocuspocusProvider>((resolve) => {
-      const p = newHocuspocusProvider(server, {
+      const p = newHocuspocusProvider(hocuspocus, {
         document: new Y.Doc(),
         name: "default",
         onSynced: () => {
@@ -41,12 +41,12 @@ describe("server", () => {
     expect(provider.document.getXmlFragment("default").toJSON()).toEqual(
       "<paragraph>Some test text</paragraph>",
     );
-    await server.destroy();
+    await hocuspocus.server.destroy();
   });
 
   // This test should make sure, existing data can still be encoded, which might change at some point due to new protocols and updates
   it("should load an existing binary document from the server", async () => {
-    const server = await newHocuspocus({
+    const hocuspocus = await newHocuspocus({
       extensions: [
         new Database({
           fetch: () => {
@@ -56,7 +56,7 @@ describe("server", () => {
       ],
     });
     const provider = await new Promise<HocuspocusProvider>((resolve) => {
-      const p = newHocuspocusProvider(server, {
+      const p = newHocuspocusProvider(hocuspocus, {
         document: new Y.Doc(),
         name: "default",
         onSynced: () => {
@@ -67,24 +67,24 @@ describe("server", () => {
     expect(provider.document.getXmlFragment("default").toJSON()).toEqual(
       "<paragraph>Some test text</paragraph>",
     );
-    await server.destroy();
+    await hocuspocus.server.destroy();
   });
 
   it("sets the readOnly flag to false when the correct modification secret is provided", async () => {
     const prisma = new PrismockClient();
     const newDocument = await createDocument(prisma);
 
-    const server = await newHocuspocus({
-      onAuthenticate: async ({ documentName, connection, token }) => {
-        await handleReadOnlyMode(prisma, documentName, connection, token);
+    const hocuspocus = await newHocuspocus({
+      onAuthenticate: async ({ documentName, connectionConfig, token }) => {
+        await handleReadOnlyMode(prisma, documentName, connectionConfig, token);
       },
-      onLoadDocument: async ({ connection }) => {
-        expect(connection.readOnly).toBe(false);
+      onLoadDocument: async ({ connectionConfig }) => {
+        expect(connectionConfig.readOnly).toBe(false);
         return Promise.resolve();
       },
     });
     await new Promise<HocuspocusProvider>((resolve) => {
-      const p = newHocuspocusProvider(server, {
+      const p = newHocuspocusProvider(hocuspocus, {
         document: new Y.Doc(),
         token: newDocument.modificationSecret,
         name: newDocument.id,
@@ -93,24 +93,24 @@ describe("server", () => {
         },
       });
     });
-    await server.destroy();
+    await hocuspocus.server.destroy();
   });
 
   it("sets the readOnly flag to true when the incorrect modification secret is provided", async () => {
     const prisma = new PrismockClient();
     const newDocument = await createDocument(prisma);
 
-    const server = await newHocuspocus({
-      onAuthenticate: async ({ documentName, connection, token }) => {
-        await handleReadOnlyMode(prisma, documentName, connection, token);
+    const hocuspocus = await newHocuspocus({
+      onAuthenticate: async ({ documentName, connectionConfig, token }) => {
+        await handleReadOnlyMode(prisma, documentName, connectionConfig, token);
       },
-      onLoadDocument: async ({ connection }) => {
-        expect(connection.readOnly).toBe(true);
+      onLoadDocument: async ({ connectionConfig }) => {
+        expect(connectionConfig.readOnly).toBe(true);
         return Promise.resolve();
       },
     });
     await new Promise<HocuspocusProvider>((resolve) => {
-      const p = newHocuspocusProvider(server, {
+      const p = newHocuspocusProvider(hocuspocus, {
         document: new Y.Doc(),
         token: "wrong-token",
         name: newDocument.id,
@@ -119,23 +119,23 @@ describe("server", () => {
         },
       });
     });
-    await server.destroy();
+    await hocuspocus.server.destroy();
   });
 
   // tests if the extensions are loaded
   it("POST /documents", async () => {
     const prisma = new PrismockClient();
-    const server = await newHocuspocus({
+    const hocuspocus = await newHocuspocus({
       onRequest: async (data: onRequestPayload) => {
         await httpRouter(data, prisma);
       },
     });
-    const response = await fetch(`${server.httpURL}/documents`, {
+    const response = await fetch(`${hocuspocus.server.httpURL}/documents`, {
       method: "POST",
     });
 
     expect(((await response.json()) as Document).id).toBeDefined();
     expect(response.status).toBe(200);
-    await server.destroy();
+    await hocuspocus.server.destroy();
   });
 });
