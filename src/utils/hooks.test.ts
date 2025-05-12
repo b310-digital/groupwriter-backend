@@ -81,6 +81,5 @@ const buildConnectionConfiguration = (): ConnectionConfiguration => {
   return {
     readOnly: false,
     isAuthenticated: false,
-    requiresAuthentication: false,
   };
 };

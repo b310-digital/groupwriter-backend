@@ -13,7 +13,7 @@ import httpRouter from "./httpRouter";
 
 const prisma = new PrismaClient();
 
-const server = Server.configure({
+const server = new Server({
   port: parseInt(process.env.PORT, 10) || 3000,
   timeout: 30000,
   debounce: 5000,
@@ -44,8 +44,8 @@ const server = Server.configure({
       throw new Error("Document not found!");
     }
   },
-  onAuthenticate: async ({ documentName, connection, token }) => {
-    await handleReadOnlyMode(prisma, documentName, connection, token);
+  onAuthenticate: async ({ documentName, connectionConfig, token }) => {
+    await handleReadOnlyMode(prisma, documentName, connectionConfig, token);
   },
   afterLoadDocument: async ({ documentName }) => {
     console.debug(`Updating lastAccessedAt for ${documentName}`);

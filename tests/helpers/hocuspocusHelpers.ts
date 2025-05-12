@@ -1,5 +1,5 @@
-import type { ServerConfiguration } from '@hocuspocus/server'
-import { Server, Hocuspocus } from '@hocuspocus/server'
+import type { ServerConfiguration } from "@hocuspocus/server";
+import { Server, Hocuspocus } from "@hocuspocus/server";
 import {
   HocuspocusProvider,
   HocuspocusProviderConfiguration,
@@ -53,6 +53,6 @@ export const newHocuspocusProvider = (
     // Add or overwrite settings, depending on the test case.
     ...options,
   });
-  provider.attach()
-  return provider
+  provider.attach();
+  return provider;
 };
