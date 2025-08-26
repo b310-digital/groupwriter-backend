@@ -21,9 +21,11 @@ Migrations:
   $ npx prisma db push --force-reset
 ```
 
-Start the server:
+Starting the server in dev mode:
 
 ```
+docker compose exec app npm i
+docker compose exec app npx prisma migrate dev
 docker compose exec app npm run start:dev
 ```
 

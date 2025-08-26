@@ -5,7 +5,11 @@ import { deleteImageFromBucket } from "../utils/s3";
 import { isValidUUID } from "../utils/validators";
 
 export const createDocument = async (prisma: PrismaClient) => {
-  return prisma.document.create({ data: {} });
+  try {
+    return prisma.document.create({ data: {} });
+  } catch {
+    console.error("Error when creating Document");
+  }
 };
 
 export const fetchDocument = async (
@@ -14,16 +18,21 @@ export const fetchDocument = async (
 ) => {
   if (!documentName || !isValidUUID(documentName)) return null;
 
-  return prisma.document.findFirst({
-    where: {
-      id: documentName,
-    },
-    select: {
-      id: true,
-      data: true,
-      modificationSecret: true,
-    },
-  });
+  try {
+    return prisma.document.findFirst({
+      where: {
+        id: documentName,
+      },
+      select: {
+        id: true,
+        data: true,
+        modificationSecret: true,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export const updateDocument = async (
@@ -51,7 +60,7 @@ export const updateDocument = async (
       error.code === "P2025"
     )
       return false;
-    console.log(error);
+    console.error(error);
     return false;
   }
 };
@@ -90,7 +99,7 @@ export const deleteDocument = async (
   modificationSecret: string,
 ): Promise<boolean> => {
   try {
-    console.info(`Deleting document ${documentName}`);
+    console.debug(`Deleting document ${documentName}`);
 
     const document = await prisma.document.findFirst({
       where: {
@@ -113,7 +122,7 @@ export const deleteDocument = async (
       error.code === "P2025"
     )
       return false;
-    console.log(error);
+    console.error(error);
     return false;
   }
 };
@@ -130,7 +139,7 @@ export const updateLastAccessedAt = async (
       data: { lastAccessedAt: new Date() },
     });
   } catch {
-    console.info(`Document ${documentName} does not exist yet`);
+    console.error(`Document ${documentName} does not exist yet`);
   }
 };
 
@@ -142,7 +151,13 @@ export const isValidModificationSecret = async (
   if (!isValidUUID(documentName)) return false;
 
   const document = await fetchDocument(prisma, documentName);
-  if (!document) throw new Error("Document not found!");
+  if (!document) {
+    console.error(
+      "Missing Document in isValidModificationSecret",
+      documentName,
+    );
+    return false;
+  }
 
   return document.modificationSecret === modificationSecret;
 };

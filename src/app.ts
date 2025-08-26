@@ -26,6 +26,7 @@ const server = new Server({
       onDisconnect: false,
       onUpgrade: false,
       onLoadDocument: false,
+      onStoreDocument: false,
     }),
     new Database({
       fetch: async ({ documentName }) => {
@@ -33,7 +34,6 @@ const server = new Server({
         return (await fetchDocument(prisma, documentName))?.data;
       },
       store: async ({ documentName, state }) => {
-        console.debug(`Storing ${documentName}`);
         await updateDocument(prisma, documentName, state);
       },
     }),
@@ -48,7 +48,6 @@ const server = new Server({
     await handleReadOnlyMode(prisma, documentName, connectionConfig, token);
   },
   afterLoadDocument: async ({ documentName }) => {
-    console.debug(`Updating lastAccessedAt for ${documentName}`);
     await updateLastAccessedAt(prisma, documentName);
   },
   onRequest: async (data: onRequestPayload) => {

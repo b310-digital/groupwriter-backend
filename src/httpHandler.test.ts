@@ -157,9 +157,9 @@ describe("handleDeleteImageRequest", () => {
     vi.mocked(deleteImageFromBucket).mockResolvedValue(
       {} as DeleteObjectCommandOutput,
     );
-    await expect(
-      handleDeleteImageRequest(document.id, "wrong", response, prisma),
-    ).rejects.toBeUndefined();
+    expect(
+      await handleDeleteImageRequest(document.id, "wrong", response, prisma),
+    ).toBeUndefined();
     expect(response.writeHead.mock.calls[0][0]).toBe(403);
   });
 });
