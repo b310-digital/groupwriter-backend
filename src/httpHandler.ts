@@ -101,7 +101,7 @@ export const handleGetImageRequest = async (
       response.end(); // Only end here when we're not using pipeline
     }
   } catch (error) {
-    console.error("Error when retrieving image ", imageId, error);
+    console.error("Error when retrieving image", imageId, error);
     if (!response.headersSent) {
       response.writeHead(500);
       response.end();
