@@ -24,6 +24,8 @@ const httpRouter = async (data: onRequestPayload, prisma: PrismaClient) => {
   if (method === "GET" && !resource) {
     response.writeHead(200);
     response.end("ok");
+
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject();
   }
 
