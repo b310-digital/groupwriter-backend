@@ -21,6 +21,12 @@ const httpRouter = async (data: onRequestPayload, prisma: PrismaClient) => {
   const resourceId = splittedUrl.length > 2 ? splittedUrl[2] : null;
   const modificationSecret = request.headers.authorization;
 
+  if (method === "GET" && !resource) {
+    response.writeHead(200);
+    response.end("ok");
+    return Promise.reject();
+  }
+
   if (method === "POST" && resource === "documents" && !subResource) {
     await handleCreateDocumentRequest(response, prisma);
     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
