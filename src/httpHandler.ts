@@ -102,7 +102,7 @@ export const handleGetImageRequest = async (
       await pipeline(Readable.from(downloadedImage), response);
     } else {
       response.writeHead(404);
-      response.end(); // Only end here when we're not using pipeline
+      response.end();
     }
   } catch (error) {
     console.error("Error when retrieving image", imageId, error);
