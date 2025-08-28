@@ -73,9 +73,13 @@ export const handleUploadImageRequest = async (
       }
     }
   } catch (error) {
-    console.error(error);
-    response.writeHead(500);
-    response.end();
+    console.error("Error when uploading image ", documentId, error);
+    if (!response.headersSent) {
+      response.writeHead(500);
+      response.end();
+    } else {
+      response.destroy();
+    }
   }
 };
 
@@ -135,9 +139,14 @@ export const handleDeleteImageRequest = async (
     } else {
       response.writeHead(404);
     }
-  } catch {
-    console.error("Error when deleting image ", imageId);
-    response.writeHead(500);
+  } catch (error) {
+    console.error("Error when deleting image ", imageId, error);
+    if (!response.headersSent) {
+      response.writeHead(500);
+      response.end();
+    } else {
+      response.destroy();
+    }
   }
 
   response.end();
