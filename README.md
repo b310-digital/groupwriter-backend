@@ -2,6 +2,8 @@
 
 Yjs-backend with custom extensions, build on top of hocuspocus: https://tiptap.dev/docs/hocuspocus/introduction
 
+# 🚨 We have consolidated the frontend and backend into a single repository to simplify maintenance and streamline the setup process. Please see https://github.com/b310-digital/groupwriter for new releases.
+
 ## Setup
 
 ### Development
